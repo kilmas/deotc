@@ -1,0 +1,531 @@
+{
+    "version": "eosio::abi/1.0",
+    "structs": [
+      {
+        "name": "config",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          },
+          {
+            "name": "value",
+            "type": "int64"
+          }
+        ]
+      },
+      {
+        "name": "result",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          }
+        ]
+      },
+      {
+        "name": "arbitrate",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          },
+          {
+            "name": "win",
+            "type": "uint8"
+          },
+          {
+            "name": "memo",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "setinfo",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          },
+          {
+            "name": "acc",
+            "type": "string"
+          },
+          {
+            "name": "ref",
+            "type": "name"
+          }
+        ]
+      },
+      {
+        "name": "setgroup",
+        "base": "",
+        "fields": [
+          {
+            "name": "acc",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "buy",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          },
+          {
+            "name": "pay",
+            "type": "asset"
+          }
+        ]
+      },
+      {
+        "name": "applyarb",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          }
+        ]
+      },
+      {
+        "name": "appeal",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          }
+        ]
+      },
+      {
+        "name": "withdraw",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          }
+        ]
+      },
+      {
+        "name": "deltable",
+        "base": "",
+        "fields": [
+          {
+            "name": "table",
+            "type": "string"
+          },
+          {
+            "name": "scope",
+            "type": "name"
+          },
+          {
+            "name": "id",
+            "type": "int64"
+          }
+        ]
+      },
+      {
+        "name": "updateorder",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          },
+          {
+            "name": "price",
+            "type": "uint32"
+          }
+        ]
+      },
+      {
+        "name": "cancelorder",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          }
+        ]
+      },
+      {
+        "name": "black_account",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "name"
+          },
+          {
+            "name": "account",
+            "type": "name"
+          }
+        ]
+      },
+      {
+        "name": "player",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "name"
+          },
+          {
+            "name": "record_id",
+            "type": "int64"
+          },
+          {
+            "name": "success_count",
+            "type": "int32"
+          },
+          {
+            "name": "arbitrate_count",
+            "type": "int32"
+          },
+          {
+            "name": "cur_count",
+            "type": "int32"
+          },
+          {
+            "name": "ref",
+            "type": "name"
+          }
+        ]
+      },
+      {
+        "name": "account",
+        "base": "",
+        "fields": [
+          {
+            "name": "primary",
+            "type": "uint64"
+          },
+          {
+            "name": "balance",
+            "type": "extended_asset"
+          }
+        ]
+      },
+      {
+        "name": "global_state",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          },
+          {
+            "name": "value",
+            "type": "int64"
+          }
+        ]
+      },
+      {
+        "name": "arbitrate_state",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          },
+          {
+            "name": "record_id",
+            "type": "int64"
+          },
+          {
+            "name": "account",
+            "type": "name"
+          },
+          {
+            "name": "dateline",
+            "type": "uint64"
+          },
+          {
+            "name": "win",
+            "type": "uint8"
+          },
+          {
+            "name": "memo",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "userinfo",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          },
+          {
+            "name": "acct",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "arbgroup",
+        "base": "",
+        "fields": [
+          {
+            "name": "account",
+            "type": "name"
+          },
+          {
+            "name": "acct",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "record",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          },
+          {
+            "name": "seller",
+            "type": "name"
+          },
+          {
+            "name": "buyer",
+            "type": "name"
+          },
+          {
+            "name": "dateline",
+            "type": "uint64"
+          },
+          {
+            "name": "pay",
+            "type": "asset"
+          },
+          {
+            "name": "buy_pay",
+            "type": "asset"
+          },
+          {
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "name": "price",
+            "type": "uint32"
+          },
+          {
+            "name": "type",
+            "type": "uint8"
+          },
+          {
+            "name": "pay_type",
+            "type": "uint8"
+          }
+        ]
+      },
+      {
+        "name": "tmp_info",
+        "base": "",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int64"
+          },
+          {
+            "name": "json",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "producer_info",
+        "base": "",
+        "fields": [
+          {"name":"owner",           "type":"name"},
+          {"name":"total_votes",     "type":"float64"},
+          {"name":"producer_key",    "type":"public_key"},
+          {"name":"is_active",       "type":"bool"},
+          {"name":"url",             "type":"string"},
+          {"name":"unpaid_blocks",   "type":"uint32"},
+          {"name":"last_claim_time", "type":"uint64"},
+          {"name":"location",        "type":"uint16"
+        }]
+      }
+    ],
+    "actions": [
+      {
+        "name": "config",
+        "type": "config",
+        "ricardian_contract": ""
+      },
+      {
+        "name": "setinfo",
+        "type": "setinfo",
+        "ricardian_contract": ""
+      },
+      {
+        "name": "result",
+        "type": "result",
+        "ricardian_contract": ""
+      },
+      {
+        "name": "buy",
+        "type": "buy",
+        "ricardian_contract": ""
+      },
+      {
+        "name": "applyarb",
+        "type": "applyarb",
+        "ricardian_contract": ""
+      },
+      {
+        "name": "appeal",
+        "type": "appeal",
+        "ricardian_contract": ""
+      },
+      {
+        "name": "withdraw",
+        "type": "withdraw",
+        "ricardian_contract": ""
+      },
+      {
+        "name": "deltable",
+        "type": "deltable",
+        "ricardian_contract": ""
+      },
+      {
+        "name": "updateorder",
+        "type": "updateorder",
+        "ricardian_contract": ""
+      },
+      {
+        "name": "cancelorder",
+        "type": "cancelorder",
+        "ricardian_contract": ""
+      },
+      {
+        "name": "arbitrate",
+        "type": "arbitrate",
+        "ricardian_contract": ""
+      },
+      {
+        "name": "setgroup",
+        "type": "setgroup",
+        "ricardian_contract": ""
+      }
+    ],
+    "tables": [
+      {
+        "name": "global",
+        "type": "global_state",
+        "index_type": "i64",
+        "key_names": [
+          "id"
+        ],
+        "key_types": [
+          "int64"
+        ]
+      },
+      {
+        "name": "players",
+        "type": "player",
+        "index_type": "i64",
+        "key_names": [
+          "id"
+        ],
+        "key_types": [
+          "name"
+        ]
+      },
+      {
+        "name": "blacklist",
+        "type": "black_account",
+        "index_type": "i64",
+        "key_names": [
+          "id"
+        ],
+        "key_types": [
+          "name"
+        ]
+      },
+      {
+        "name": "accounts",
+        "type": "account",
+        "index_type": "i64",
+        "key_names": [
+          "primary"
+        ],
+        "key_types": [
+          "uint64"
+        ]
+      },
+      {
+        "name": "records",
+        "type": "record",
+        "index_type": "i64",
+        "key_names": [
+          "id"
+        ],
+        "key_types": [
+          "int64"
+        ]
+      },
+      {
+        "name": "arbitration",
+        "type": "arbitrate_state",
+        "index_type": "i64",
+        "key_names": [
+          "id"
+        ],
+        "key_types": [
+          "int64"
+        ]
+      },
+      {
+        "name": "userinfos",
+        "type": "userinfo",
+        "index_type": "i64",
+        "key_names": [
+          "id"
+        ],
+        "key_types": [
+          "int64"
+        ]
+      },
+      {
+        "name": "arbgroups",
+        "type": "arbgroup",
+        "index_type": "i64",
+        "key_names": [
+          "account"
+        ],
+        "key_types": [
+          "name"
+        ]
+      },
+      {
+        "name": "tmps",
+        "type": "tmp_info",
+        "index_type": "i64",
+        "key_names" : ["owner"],
+        "key_types" : ["name"]
+      },
+      {
+        "name": "producers",
+        "type": "producer_info",
+        "index_type": "i64",
+        "key_names" : ["owner"],
+        "key_types" : ["name"]
+      }
+    ]
+  }

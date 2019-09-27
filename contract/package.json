@@ -1,0 +1,13 @@
+{
+  "name": "deotc",
+  "version": "1.0.0",
+  "main": "./extract.js",
+  "description": "",
+  "repository": "",
+  "keywords": "",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fibos.js": "^0.3.1"
+  }
+}

@@ -94,9 +94,9 @@ function assert_sell_buy (sell, buy) {
   assert(sell_asset[1] === pay_asset[1], error_msg[8]);
 }
 
-function assert_maintenance () {
-  assert(getConfig(6) == 0, '系统维护中');
-}
+// function assert_maintenance () {
+//   assert(getConfig(6) == 0, '系统维护中');
+// }
 
 function assert_player_count (account) {
   const { player } = getPlayer(account);
@@ -163,10 +163,10 @@ exports.deltable = (table, scope, id) => {
   action.require_auth(CONTRACT_NAME);
   assert(db[table], 'no this table');
   const tables = db[table](CONTRACT_NAME, scope);
-  if (id) {
-    const red = tables.find(id);
+  if (id >= 0) {
+    const record = tables.find(id);
     assert(record.data, 'need have data');
-    red.remove();
+    record.remove();
   } else {
     let itr = tables.begin();
     let i = 0, itr1;

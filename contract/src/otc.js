@@ -77,7 +77,7 @@ function assert_arbitrate (account) {
   const prods = db.producers('eosio', 'eosio');
   const producer = prods.find(account);
   const balance = getBalance(account);
-  assert((producer.data && Number(producer.data.total_votes) > getConfig(1)) || Number(balance[0]) > getConfig(9), 'need bp or richer');
+  assert(Number(balance[0]) > getConfig(10) || (producer.data && Number(producer.data.total_votes) > getConfig(1)), 'need bp or richer');
 }
 
 function assert_userinfo (account) {
@@ -100,7 +100,7 @@ function assert_maintenance () {
 
 function assert_player_count (account) {
   const { player } = getPlayer(account);
-  assert(player.data && player.data.cur_count - player.data.success_count < 2, '用户不能部署多个订单');
+  assert(player.data && player.data.cur_count - player.data.success_count < getConfig(9), '用户不能部署多个订单');
 }
 
 
@@ -130,7 +130,9 @@ function getConfig(id) {
     // 抵押费用
     staking_pay = 10000000,
     // 限制每个用户布单数
-    user_record_limit = 1,
+    user_record_limit = 2,
+    // 仲裁大户数量
+    arb_rich_limit = 500000,
   ]
   return default_config[id];
 }
@@ -757,4 +759,3 @@ exports.setgroup = (acct) => {
     });
   }
 }
-

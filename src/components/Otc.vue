@@ -48,7 +48,7 @@
             <b-dropdown id="dropdown-left" right :text="'...'">
               <b-dropdown-item href="#" @click.prevent="showTab=2;getMyBuyList();getMySellList();getArbs();">我的订单</b-dropdown-item>
               <b-dropdown-item href="#" @click.prevent="showTab=2;tabIndex2=2;getArbs();">寻找仲裁</b-dropdown-item>
-              <b-dropdown-item href="#" @click.prevent="showTab=2;tabIndex2=3;getArbs();" v-if="myFO>10000||arbAcct">参与仲裁</b-dropdown-item>
+              <b-dropdown-item href="#" @click.prevent="showTab=2;tabIndex2=3;getArbs();" v-if="myFO>100000||arbAcct">参与仲裁</b-dropdown-item>
             </b-dropdown>
           </div>
         </div>
@@ -360,7 +360,7 @@
               </b-list-group-item>
             </b-list-group>
           </b-tab>
-          <b-tab title="参与仲裁" @click="getArbList" v-if="myFO>10000||arbAcct">
+          <b-tab title="参与仲裁" @click="getArbList" v-if="myFO>100000||arbAcct">
             <b-list-group>
               <b-list-group-item v-for="(item, index) in arbList" :key="index">
                 <div class="w-100">

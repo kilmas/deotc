@@ -94,9 +94,9 @@ function assert_sell_buy (sell, buy) {
   assert(sell_asset[1] === pay_asset[1], error_msg[8]);
 }
 
-// function assert_maintenance () {
-//   assert(getConfig(6) == 0, '系统维护中');
-// }
+function assert_maintenance () {
+  assert(getConfig(6) == 0, '系统维护中');
+}
 
 function assert_player_count (account) {
   const { player } = getPlayer(account);
@@ -163,10 +163,10 @@ exports.deltable = (table, scope, id) => {
   action.require_auth(CONTRACT_NAME);
   assert(db[table], 'no this table');
   const tables = db[table](CONTRACT_NAME, scope);
-  if (id >= 0) {
-    const record = tables.find(id);
+  if (id) {
+    const red = tables.find(id);
     assert(record.data, 'need have data');
-    record.remove();
+    red.remove();
   } else {
     let itr = tables.begin();
     let i = 0, itr1;
@@ -188,6 +188,21 @@ function update_record_id (account, id) {
   } 
 }
 
+const arbitrate_indexes = {
+  record: [64, o => [o.record_id]],
+  account: [64, o => [o.account]],
+};
+
+function delarbs (id) {
+  const arbitration = db.arbitration(CONTRACT_NAME, CONTRACT_NAME, arbitrate_indexes);
+  let upper_itr = arbitration.indexes.record.find({record_id:id});
+  let next_itr;
+  while (upper_itr.data) {
+    next_itr = upper_itr.next();
+    upper_itr.remove();
+    upper_itr = next_itr;
+  }
+}
 
 /**
 * @param account
@@ -406,7 +421,13 @@ exports.updateorder = (id, price) => {
   const { record } = getRecord(id);
   assert(record.data, error_msg[0]);
   assert(record.data.status == 1, error_msg[1]);
-  assert(record.data.seller === account, '本人订单');
+  if (record.data.type == 1 || record.data.type == 3){
+    assert(record.data.seller === account, '本人订单');
+  } else if (record.data.type == 2) {
+    assert(record.data.buyer === account, '本人订单');
+  } else {
+    assert(false, '订单错误');
+  }
   // 锁定
   record.data.price = price;
   record.update(CONTRACT_NAME);
@@ -464,7 +485,11 @@ exports.cancelorder = (id) => {
   } else {
     assert(false, '非卖家/买家不能取消订单');
   }
+  // 删除改id所有仲裁记录
+  delarbs(id);
 }
+
+
 /**
  * @param id
  * 卖家确认订单成功
@@ -510,6 +535,8 @@ exports.result = (id) => {
     player.data.success_count++;
     player.update(CONTRACT_NAME);
   }
+  // 删除改id所有仲裁记录
+  delarbs(id);
 };
 
 // 申请仲裁
@@ -527,11 +554,6 @@ exports.applyarb = (id) => {
   record.update(CONTRACT_NAME);
 }
 
-
-const arbitrate_indexes = {
-  record: [64, o => [o.record_id]],
-  account: [64, o => [o.account]],
-};
 /**
  * @param id
  * @param win 1:卖家胜诉，2：买家胜诉

@@ -1439,7 +1439,7 @@
               e.balance.quantity.split(" ")[1] == "FO"
             );
             // 是否新用户
-            if (fotoken.balance) {
+            if (fotoken && fotoken.balance) {
               this.myFO = Number(fotoken.balance.quantity.split(" ")[0])
               if (fotoken.balance.quantity.split(" ")[0] >= 100) {
                 this.isNewAccount = false

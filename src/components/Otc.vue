@@ -583,7 +583,7 @@
             <b-form @submit.prevent="arbGroupSubmit" @reset.prevent="accountReset">
               <b-form-group
                 id="payAccountGroup"
-                label="上传微信群二维码:"
+                label="上传联系群二维码:"
                 label-for="payAccount"
               >
                 <div v-if="sellAccount < 10" class="mt-2">
@@ -742,7 +742,15 @@
         tranMsg: "",
         tranText: "text-success",
         tokens: [{ text: 'FOUSDT', value: 'FOUSDT' }, { text: 'FO', value: 'FO' }, { text: 'FODAI', value: 'FODAI' }, { text: 'FOETH', value: 'FOETH' }],
-        accountTypes: [{ text: '微信群二维码', value: 0 }, { text: '微信收款二维码', value: 1 }, { text: '微信账号二维码', value: 2 }, { text: '支付宝群二维码', value: 3 }, { text: '支付宝收款二维码', value: 4 }, { text: '支付宝账号二维码', value: 6 }],
+        accountTypes: [
+          { text: '微信群二维码', value: 0 },
+          { text: '微信收款二维码', value: 1 },
+          { text: '微信账号二维码', value: 2 },
+          { text: '支付宝群二维码', value: 3 },
+          { text: '支付宝收款二维码', value: 4 },
+          { text: '支付宝账号二维码', value: 6 },
+          { text: '电报二维码', value: 7 }
+        ],
         contractBalance: [{ text: '支付宝', value: 'aliPay' }],
         selectNet: "foMain",
         chains: {

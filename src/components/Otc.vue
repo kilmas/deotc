@@ -1193,7 +1193,8 @@
         try {
           res = await this.fo.getTableRows(true, contractName, contractName, "players", "id", 0, "", 1000, "i64");
           res.rows.forEach(item=>{
-            this.players[item.id] = item
+            this.$set(this.players, item.id, item)
+            // this.players[item.id] = item
           })
         } catch (e) {
           console.log(e)
@@ -1264,9 +1265,7 @@
           const res = await this.fo.getTableRows(true, this.contractName, this.contractName,
           "records", "buyer", this.account.name, this.account.name, 100, "i64", 3, true);
           res.rows.forEach(item => {
-            if (item.buyer === this.account.name) {
-              this.myBuyList[item.id] = item;
-            }
+            this.$set(this.myBuyList, item.id, item)
           });
         } catch (e) {
           console.error(e);
@@ -1278,9 +1277,7 @@
           const res = await this.fo.getTableRows(true, this.contractName, this.contractName,
           "records", "seller", this.account.name, this.account.name, 100, "i64", 2, true);
           res.rows.forEach(item => {
-            if (item.seller === this.account.name) {
-              this.mySellList[item.id] = item;
-            }
+            this.$set(this.mySellList, item.id, item)
           });
         } catch (e) {
           console.error(e);
@@ -1294,7 +1291,8 @@
           res.rows.forEach(item => {
             item.win = null;
             if (item.status >= 3) {
-              this.arbList[item.id] = item;
+              this.$set(this.arbList, item.id, item)
+              // this.arbList[item.id] = item;
             }
             if (!this.acctInfos[item.seller]) {
               this.getAcctInfo(item.seller)
@@ -1439,6 +1437,7 @@
 
           this.fo = fo;
           this.requiredFields = requiredFields;
+
           this.account = account;
           this.copyData = "http://otc.qingah.com/?ref=" + this.account.name
           this.myBalance = await this.getAccount(account.name);
@@ -1510,7 +1509,8 @@
               } else if (item.coin === 'eth') {
                 token = 'FOETH'
               }
-              this.tokenPrice[token] = item.ticker
+              // this.tokenPrice[token] = item.ticker
+              this.$set(this.tokenPrice, token, item.ticker)
               this.orderPrice = item.ticker.sell
               if (this.orderType !== 3) {
                 this.payToken = parseInt(this.contractConfig[5] / this.priceLen / item.ticker.sell)
@@ -1558,9 +1558,6 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-  @import url("//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css");
-</style>
 <style lang="scss">
 .flex-row-center {
   display: flex;

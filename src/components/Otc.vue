@@ -98,7 +98,7 @@
         <b-tabs content-class="mt-3" v-model="tabIndex" v-else-if="showTab===1">
           <b-tab :title="tab" v-for="(tab, tindex) in tabTokens" :key="tindex">
             <b-list-group>
-              <b-list-group-item v-for="(item, index) in tokenItems[tabIndex+(orderType-1)*4]" :key="index">
+              <b-list-group-item v-for="(item, index) in tokenItems[tindex+(orderType-1)*4]" :key="index">
                 <div class="w-100">
                   <div class="flex-row-center" v-if="orderType===1">
                     <div class="medium-text">ID:{{item.id}}|{{item.seller}}</div>

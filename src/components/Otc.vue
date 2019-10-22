@@ -1168,7 +1168,6 @@
         var token = null;
         try {
           token = await this.fo.getTableRows(true, contractName, contractName, "players", "id", account, -1, 1);
-          console.log(token.rows[0])
           this.player = token.rows[0]
         } catch (e) {
           console.log(e)
@@ -1209,12 +1208,12 @@
         // 以厘为单位
         let message = `${this.orderType},`;
         if (this.orderType === 1){
-          message += `${Number(this.orderPrice * this.priceLen)}${this.sellAccount>-1?`,${this.sellAccount}`:',0'}`
+          message += `${parseInt(this.orderPrice * this.priceLen)}${this.sellAccount>-1?`,${this.sellAccount}`:',0'}`
         } else if (this.orderType === 2) {
-          message += `${Number(this.orderPrice * this.priceLen)},${payToken}${this.sellAccount>-1?`,${this.sellAccount}`:',0'}`;
+          message += `${parseInt(this.orderPrice * this.priceLen)},${payToken}${this.sellAccount>-1?`,${this.sellAccount}`:',0'}`;
           payToken = '1.0000 FO'
         } else if (this.orderType === 3) {
-          message += `${Number(this.orderPrice * this.priceLen)}${this.sellAccount>-1?`,${this.sellAccount}`:',0'}`;
+          message += `${parseInt(this.orderPrice * this.priceLen)}${this.sellAccount>-1?`,${this.sellAccount}`:',0'}`;
           payToken = '1000.0000 FO'
         }
         // 执行智能合约
@@ -1446,11 +1445,8 @@
               e.balance.quantity.split(" ")[1] == "FO"
             );
             // 是否新用户
-            if (fotoken && fotoken.balance) {
-              this.myFO = Number(fotoken.balance.quantity.split(" ")[0])
-              if (fotoken.balance.quantity.split(" ")[0] >= 100) {
-                this.isNewAccount = false
-              }
+            if (fotoken && fotoken.balance && (this.myFO = Number(fotoken.balance.quantity.split(" ")[0]) >= 100)) {
+              this.isNewAccount = false
             } else {
               this.showTab=1;
               this.actionText ='小额进场';

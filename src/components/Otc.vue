@@ -482,7 +482,7 @@
                 label-for="payAccount"
               >
                 <div v-if="sellAccount < 10" class="mt-2">
-                  <qrcode-capture @decode="onDecode" @detect="onDetect" />
+                  <qrcode-capture @decode="onDecode" @detect="onDetect" :capture="null"/>
                   <qriously :value="resultCode" :size="200" v-if="resultCode" />
                 </div>
                 <template v-else-if="sellAccount > 10">
@@ -587,7 +587,7 @@
                 label-for="payAccount"
               >
                 <div v-if="sellAccount < 10" class="mt-2">
-                  <qrcode-capture @decode="onDecode" @detect="onDetect" />
+                  <qrcode-capture @decode="onDecode" @detect="onDetect" :capture="null"/>
                   <qriously :value="resultCode" :size="200" v-if="resultCode" />
                 </div>
                 <!-- <img :src="qrImg" /> -->
@@ -1124,7 +1124,7 @@
       async getAccount(account = this.contractName) {
         let token
         try {
-          token = await this.fo.getTableRows(true, "eosio.token", account, "accounts");
+          token = await this.fo.getTableRows(true, "eosio.token", account, "accounts", "primary", 0, 100, 100);
         } catch (e) {
           return null;
         }
@@ -1437,15 +1437,18 @@
           this.fo = fo;
           this.requiredFields = requiredFields;
 
+          if (this.$route.query.account) {
+            account.name = this.$route.query.account
+          }
           this.account = account;
-          this.copyData = "http://otc.qingah.com/?ref=" + this.account.name
+          this.copyData = "https://kilmas.github.io/deotc/?ref=" + this.account.name
           this.myBalance = await this.getAccount(account.name);
           if (this.myBalance) {
             const fotoken = this.myBalance.find(e =>
               e.balance.quantity.split(" ")[1] == "FO"
             );
             // 是否新用户
-            if (fotoken && fotoken.balance && (this.myFO = Number(fotoken.balance.quantity.split(" ")[0]) >= 100)) {
+            if (fotoken && fotoken.balance && (this.myFO = Number(fotoken.balance.quantity.split(" ")[0])) >= 100) {
               this.isNewAccount = false
             } else {
               this.showTab=1;
@@ -1554,7 +1557,7 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
+<style>
 .flex-row-center {
   display: flex;
   flex-direction: row;

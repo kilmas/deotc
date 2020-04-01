@@ -46,8 +46,8 @@
               <b-dropdown-item href="#" @click.prevent="showToken=item.balance.quantity;" v-for="(item, index) in myBalance" :key="index">{{item.balance.quantity}}</b-dropdown-item>
             </b-dropdown>
             <b-dropdown id="dropdown-left" right :text="'...'">
-              <b-dropdown-item href="#" @click.prevent="showTab=2;getMyBuyList();getMySellList();getArbs();">我的订单</b-dropdown-item>
-              <b-dropdown-item href="#" @click.prevent="showTab=2;tabIndex2=2;getArbs();">寻找仲裁</b-dropdown-item>
+              <b-dropdown-item href="#" @click.prevent="myOrders">我的订单</b-dropdown-item>
+              <b-dropdown-item href="#" @click.prevent="findArb">寻找仲裁</b-dropdown-item>
               <b-dropdown-item href="#" @click.prevent="showTab=2;tabIndex2=3;getArbs();" v-if="myFO>100000||arbAcct">参与仲裁</b-dropdown-item>
             </b-dropdown>
           </div>
@@ -675,6 +675,8 @@
   const foTestChain =
     "68cee14f598d88d340b50940b6ddfba28c444b46cd5f33201ace82c78896793a"
 
+  const CONTRACT = 'fibosuserp2p'
+
   export default {
     name: "fibosuserp2p",
     components: { QrcodeCapture },
@@ -683,7 +685,14 @@
       if (this.$route.query.debug == "fo") {
         this.selectNet = "foTest";
       }
-      this.initIronman(this.co);
+      const foNetwork = this.network[this.selectNet];
+      this.fo = Fo({
+        chainId: this.chains[this.selectNet],
+        httpEndpoint:`${foNetwork.protocol}://${foNetwork.reqHost}:${location.protocol === 'http:'? foNetwork.port: foNetwork.reqPost }`,
+      })
+      this.getRecords();
+      this.getPlayers();
+      this.initIronman();
       if (!localStorage.getItem("showRule")) {
         this.ruleShow = true;
         localStorage.setItem("showRule", 1);
@@ -728,7 +737,6 @@
         tabIndex2: 0,
         tabTokens: ['FO', 'FOUSDT', 'FODAI', 'FOETH'],
         selectToken: 'FO', 
-        contractName: 'fibosuserp2p',
         sellToken: 'FO',
         orderType: 1,
         orderTypes: [{ text: '卖单', value: 1 }, { text: '买单', value: 2 }, { text: '挂进场单', value: 3 }],
@@ -774,8 +782,6 @@
           foMain: {
             name: "FIBOS Mainnet",
             protocol: "http",
-            // port: 80,
-            // host: "api.fibos.rocks",
             reqPost: 443,
             blockchain: "fibos",
             chainId: foMainChain,
@@ -882,7 +888,7 @@
         this.buttonSpiner = true
         const payAccount = this.sellAccount > 10 ? this.payAccount: this.resultCode
         try {
-          const contract = await this.fo.contract(this.contractName, {
+          const contract = await this.fo.contract(CONTRACT, {
             requiredFields: this.requiredFields
           });
           const trx = await contract.setinfo(this.sellAccount, Base64.encode(payAccount), '', {
@@ -901,7 +907,7 @@
         // 执行智能合约
         this.buttonSpiner = true
         try {
-          const contract = await this.fo.contract(this.contractName, {
+          const contract = await this.fo.contract(CONTRACT, {
             requiredFields: this.requiredFields
           });
           const trx = await contract.setgroup(Base64.encode(this.resultCode), {
@@ -920,7 +926,7 @@
         // 更改价格
         this.buttonSpiner = true
         try {
-          const contract = await this.fo.contract(this.contractName, {
+          const contract = await this.fo.contract(CONTRACT, {
             requiredFields: this.requiredFields
           });
           const trx = await contract.updateorder(this.selectItem.id, parseInt(this.orderPrice * this.priceLen) , {
@@ -939,7 +945,7 @@
       async cancelOrder (item) {
         this.buttonSpiner = true
         try {
-          const contract = await this.fo.contract(this.contractName, {
+          const contract = await this.fo.contract(CONTRACT, {
             requiredFields: this.requiredFields
           });
           const trx = await contract.cancelorder(item.id, {
@@ -961,7 +967,7 @@
       async resultOrder(item) {
         this.buttonSpiner = true
         try {
-          const contract = await this.fo.contract(this.contractName, {
+          const contract = await this.fo.contract(CONTRACT, {
             requiredFields: this.requiredFields
           });
           const trx = await contract.result(item.id, {
@@ -984,7 +990,7 @@
         const win = Number(item.win)
         this.buttonSpiner = true
         try {
-          const contract = await this.fo.contract(this.contractName, {
+          const contract = await this.fo.contract(CONTRACT, {
             requiredFields: this.requiredFields
           });
           const trx = await contract.arbitrate(item.id, win, '胜诉', {
@@ -1009,7 +1015,7 @@
       async applyarbOrder(item) {
         this.buttonSpiner = true
         try {
-          const contract = await this.fo.contract(this.contractName, {
+          const contract = await this.fo.contract(CONTRACT, {
             requiredFields: this.requiredFields
           });
           const trx = await contract.applyarb(item.id, {
@@ -1033,7 +1039,7 @@
       async appealOrder(item) {
         this.buttonSpiner = true
         try {
-          const contract = await this.fo.contract(this.contractName, {
+          const contract = await this.fo.contract(CONTRACT, {
             requiredFields: this.requiredFields
           });
           const trx = await contract.appeal(item.id, {
@@ -1074,7 +1080,7 @@
             });
             const trx = await contract.transfer(
               this.account.name,
-              this.contractName,
+              CONTRACT,
               payToken,
               message
             );
@@ -1093,7 +1099,7 @@
         // 购买token
         this.buttonSpiner = true
         try {
-          const contract = await this.fo.contract(this.contractName, {
+          const contract = await this.fo.contract(CONTRACT, {
             requiredFields: this.requiredFields
           });
           const trx = await contract.buy(item.id, item.pay ,{
@@ -1121,7 +1127,7 @@
         this.modal = true;
         this.modalMsg = "复制成功：" + this.copyData
       },
-      async getAccount(account = this.contractName) {
+      async getAccount(account = CONTRACT) {
         let token
         try {
           token = await this.fo.getTableRows(true, "eosio.token", account, "accounts", "primary", 0, 100, 100);
@@ -1133,7 +1139,7 @@
       async getAcctInfo(account) {
         let res
         try {
-          res = await this.fo.getTableRows(true, this.contractName, account, "userinfos");
+          res = await this.fo.getTableRows(true, CONTRACT, account, "userinfos");
           this.$set(this.acctInfos, account, {})
           res.rows.forEach(item=>{
             this.$set(this.acctInfos[account], item.id, item)
@@ -1146,7 +1152,7 @@
       async getArbGroups () {
         let res
         try {
-          res = await this.fo.getTableRows(true, this.contractName, this.contractName, "arbgroups");
+          res = await this.fo.getTableRows(true, CONTRACT, CONTRACT, "arbgroups");
           this.arbGroups = res.rows;
         } catch (e) {
           return null;
@@ -1164,10 +1170,9 @@
         this.ruleShow = true;
       },
       async getPlayer(account) {
-        let contractName = this.contractName;
         var token = null;
         try {
-          token = await this.fo.getTableRows(true, contractName, contractName, "players", "id", account, -1, 1);
+          token = await this.fo.getTableRows(true, CONTRACT, CONTRACT, "players", "id", account, -1, 1);
           this.player = token.rows[0]
         } catch (e) {
           console.log(e)
@@ -1187,10 +1192,9 @@
         return res;
       },
       async getPlayers() {
-        const contractName = this.contractName;
         let res = null;
         try {
-          res = await this.fo.getTableRows(true, contractName, contractName, "players", "id", 0, "", 1000, "i64");
+          res = await this.fo.getTableRows(true, CONTRACT, CONTRACT, "players", "id", 0, "", 1000, "i64");
           res.rows.forEach(item=>{
             this.$set(this.players, item.id, item)
             // this.players[item.id] = item
@@ -1223,7 +1227,7 @@
           });
           const trx = await contract.transfer(
             this.account.name,
-            this.contractName,
+            CONTRACT,
             payToken,
             message
           );
@@ -1239,7 +1243,7 @@
       async withdraw(item) {
         this.buttonSpiner = true;
         try {
-          const contract = await this.fo.contract(this.contractName, {
+          const contract = await this.fo.contract(CONTRACT, {
             requiredFields: this.requiredFields
           });
           const trx = await contract.withdraw(item.id, { authorization: this.account.name });
@@ -1259,9 +1263,22 @@
         }
         this.buttonSpiner = false;
       },
+      myOrders() {
+        if (this.account.name) {
+          this.showTab = 2
+          this.getMyBuyList()
+          this.getMySellList()
+          this.getArbs()
+        }
+      },
+      findArb() {
+        this.showTab = 2
+        this.tabIndex2 = 2
+        this.getArbs()
+      },
       async getMyBuyList() {
         try {
-          const res = await this.fo.getTableRows(true, this.contractName, this.contractName,
+          const res = await this.fo.getTableRows(true, CONTRACT, CONTRACT,
           "records", "buyer", this.account.name, this.account.name, 100, "i64", 3, true);
           res.rows.forEach(item => {
             this.$set(this.myBuyList, item.id, item)
@@ -1273,7 +1290,7 @@
       async getMySellList() {
         // if (Object.keys(this.mySellList).length) return
         try {
-          const res = await this.fo.getTableRows(true, this.contractName, this.contractName,
+          const res = await this.fo.getTableRows(true, CONTRACT, CONTRACT,
           "records", "seller", this.account.name, this.account.name, 100, "i64", 2, true);
           res.rows.forEach(item => {
             this.$set(this.mySellList, item.id, item)
@@ -1285,7 +1302,7 @@
       async getArbList() {
         if (Object.keys(this.arbList).length > 0) return;
         try {
-          const res = await this.fo.getTableRows(true, this.contractName, this.contractName,
+          const res = await this.fo.getTableRows(true, CONTRACT, CONTRACT,
           "records", "", "", "", 1000, "i64", 1, true);
           res.rows.forEach(item => {
             item.win = null;
@@ -1307,7 +1324,7 @@
       },
       async getRecords() {
         try {
-          const res = await this.fo.getTableRows(true, this.contractName, this.contractName,
+          const res = await this.fo.getTableRows(true, CONTRACT, CONTRACT,
           "records", "", "", "", 1000, "i64", 1, true);
           res.rows.forEach(item=>{
             if (item.status === 1) {
@@ -1340,7 +1357,7 @@
       },
       async getArbs() {
         try {
-          const res = await this.fo.getTableRows(true, this.contractName, this.contractName,
+          const res = await this.fo.getTableRows(true, CONTRACT, CONTRACT,
           "arbitration", "", "", "", 1000, "i64", 1, true);
           let tmp = {}
           res.rows.forEach(item=>{
@@ -1398,7 +1415,7 @@
         const foNetwork = this.network[this.selectNet];
 
         const RequirefoNetwork = {
-          blockchain: "fibos",
+          blockchain: foNetwork.blockchain,
           chainId: this.chains[this.selectNet],
           // protocol: foNetwork.protocol,
           host: foNetwork.host,
@@ -1411,7 +1428,7 @@
         // ironman.getIdentity 用户授权页面
         try {
           const identity = await ironman.getIdentity({ accounts: [RequirefoNetwork] });
-          const account = identity.accounts.find(acc => acc.blockchain === "fibos");
+          const account = identity.accounts.find(acc => acc.blockchain === foNetwork.blockchain);
           // FO参数
           const foOptions = {
             broadcast: true,
@@ -1457,8 +1474,6 @@
             }
           }
           this.getProducer(this.account.name);
-          this.getRecords();
-          this.getPlayers();
           await this.getAcctInfo(this.account.name);
           this.assertAcct(this.account.name);
         } catch (e) {

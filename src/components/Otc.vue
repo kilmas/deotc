@@ -688,7 +688,7 @@
       const foNetwork = this.network[this.selectNet];
       this.fo = Fo({
         chainId: this.chains[this.selectNet],
-        httpEndpoint:`${foNetwork.protocol}://${foNetwork.reqHost}:${location.protocol === 'http:'? foNetwork.port: foNetwork.reqPost }`,
+        httpEndpoint:`${location.protocol}//${foNetwork.reqHost}:${location.protocol === 'http:'? foNetwork.port: foNetwork.reqPost }`,
       })
       this.getRecords();
       this.getPlayers();

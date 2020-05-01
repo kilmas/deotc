@@ -1130,6 +1130,15 @@
       async getAccount(account = CONTRACT) {
         let token
         try {
+          token = await this.fo.getAccount(account);
+        } catch (e) {
+          return null;
+        }
+        return token;
+      },
+      async getBalance(account = CONTRACT) {
+        let token
+        try {
           token = await this.fo.getTableRows(true, "eosio.token", account, "accounts", "primary", 0, 100, 100);
         } catch (e) {
           return null;
@@ -1459,7 +1468,7 @@
           }
           this.account = account;
           this.copyData = "https://kilmas.github.io/deotc/?ref=" + this.account.name
-          this.myBalance = await this.getAccount(account.name);
+          this.myBalance = await this.getBalance(account.name);
           if (this.myBalance) {
             const fotoken = this.myBalance.find(e =>
               e.balance.quantity.split(" ")[1] == "FO"
@@ -1468,9 +1477,18 @@
             if (fotoken && fotoken.balance && (this.myFO = Number(fotoken.balance.quantity.split(" ")[0])) >= 100) {
               this.isNewAccount = false
             } else {
-              this.showTab=1;
-              this.actionText ='小额进场';
-              this.orderType = 3;
+              const myAccount = await this.getAccount(account.name);
+              let accLimit = 0
+              if (myAccount) {
+                accLimit = myAccount.cpu_weight + myAccount.net_weight
+              }
+              if (accLimit < 10000) {
+                this.showTab = 1;
+                this.actionText ='小额进场';
+                this.orderType = 3;
+              } else {
+                this.isNewAccount = false
+              }
             }
           }
           this.getProducer(this.account.name);

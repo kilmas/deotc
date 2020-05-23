@@ -735,7 +735,7 @@
         showTab: 1,
         tabIndex: 0,
         tabIndex2: 0,
-        tabTokens: ['FO', 'FOUSDT', 'FODAI', 'FOETH'],
+        tabTokens: ['FO', 'FOUSDT', 'FODAI', 'FOETH', 'FOUSDK'],
         selectToken: 'FO', 
         sellToken: 'FO',
         orderType: 1,
@@ -749,7 +749,7 @@
         tranHash: false,
         tranMsg: "",
         tranText: "text-success",
-        tokens: [{ text: 'FOUSDT', value: 'FOUSDT' }, { text: 'FO', value: 'FO' }, { text: 'FODAI', value: 'FODAI' }, { text: 'FOETH', value: 'FOETH' }],
+        tokens: [{ text: 'FOUSDT', value: 'FOUSDT' }, { text: 'FO', value: 'FO' }, { text: 'FODAI', value: 'FODAI' }, { text: 'FOETH', value: 'FOETH' }, { text: 'FOUSDK', value: 'FOUSDK' },],
         accountTypes: [
           { text: '微信群二维码', value: 0 },
           { text: '微信收款二维码', value: 1 },
@@ -804,7 +804,7 @@
         tokenLength: 4,
         player: {},
         players: [],
-        tokenItems: [{},{},{},{},{},{},{},{}],
+        tokenItems: [{},{},{},{},{},{},{},{},{},{}],
         tokenItems3: {},
         acctInfos: {},
         updateorderModal: false,
@@ -1337,8 +1337,8 @@
           "records", "", "", "", 1000, "i64", 1, true);
           res.rows.forEach(item=>{
             if (item.status === 1) {
-              if ((item.type === 1||item.type===2)) {
-                let key = (item.type-1) * 4
+              if ((item.type === 1 || item.type === 2)) {
+                const key = (item.type-1) * 4
                 const token = item.pay.split(' ')[1]
                 if (token === 'FO') {
                   this.$set(this.tokenItems[0+key], item.id, item)
@@ -1348,7 +1348,9 @@
                   this.$set(this.tokenItems[2+key], item.id, item)
                 } else if (token === 'FOETH') {
                   this.$set(this.tokenItems[3+key], item.id, item)
-                }
+                } else if (token === 'FOUSDK') {
+                  this.$set(this.tokenItems[4+key], item.id, item)
+                } 
               } else if (item.type===3) {
                 this.$set(this.tokenItems3, item.id, item)
               }
@@ -1399,6 +1401,7 @@
           cc = c.replace('FO', '');
         }
         cc = cc.toLowerCase();
+        if (cc === ('dai' || 'usdk')) cc = 'usdt'
         this.websocketsend(JSON.stringify({
           "cmd":{
             "type":15 // 查询指定交易对或者指定市场的行情数据，类型：整数
@@ -1541,8 +1544,11 @@
               } else if (item.coin === 'eth') {
                 token = 'FOETH'
               }
-              // this.tokenPrice[token] = item.ticker
               this.$set(this.tokenPrice, token, item.ticker)
+              if (token === 'FOUSDT') {
+                this.$set(this.tokenPrice, 'DAI', item.ticker)
+                this.$set(this.tokenPrice, 'FOUSDK', item.ticker)
+              }
               this.orderPrice = item.ticker.sell
               if (this.orderType !== 3) {
                 this.payToken = parseInt(this.contractConfig[5] / this.priceLen / item.ticker.sell)
@@ -1577,9 +1583,7 @@
       },
       orderType(newVal) {
         // 进场单
-        if(newVal === 2){
-          // 
-        } else if (newVal === 3) {
+        if (newVal === 3) {
           this.sellToken = 'FO'
           this.payToken = 1000
         }

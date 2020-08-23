@@ -16,4 +16,4 @@ npm run build
 ```
 
 # deotc
-[https://kilmas.github.io/deotc/#/](https://kilmas.github.io/deotc/#/)
+[https://deotc.qingah.com/](https://deotc.qingah.com)

@@ -14,6 +14,7 @@
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav>
           <b-nav-item @click.prevent="showRule">Rule</b-nav-item>
+          <b-nav-item @click.prevent="$router.push({ path: `/ctc` })">Go to ctc</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-item-dropdown text="Lang" right>
@@ -732,7 +733,7 @@
                       <b-button
                         variant="primary"
                         @click="arbitratebOrder(item)"
-                        :disabled="arbAcct||account.name==item.buyer||account.name==item.seller"
+                        :disabled="!arbAcct||account.name==item.buyer||account.name==item.seller"
                       >确认胜诉</b-button>
                     </div>
                   </div>
@@ -1873,9 +1874,9 @@ export default {
       //数据发送
       this.websock.send(agentData)
     },
-    websocketclose(e) {
+    websocketclose() {
       //关闭
-      console.log('connection closed (' + e.code + ')')
+      console.log('connection closed')
     },
     moment,
     acctDecode: Base64.decode,

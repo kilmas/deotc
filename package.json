@@ -52,6 +52,9 @@
       "autoprefixer": {}
     }
   },
+  "resolutions": {
+    "fibos.js/eosjs/eosjs-api":  "git+ssh://git@github.com/kilmas/eosjs-api.git"
+  },
   "browserslist": [
     "> 1%",
     "last 2 versions",

@@ -50,6 +50,7 @@
       </div>
 
       <b-alert show variant="primary">直接波场USDT由转账到你的TRC-20地址,收取手续费0.1USDT</b-alert>
+      <b-alert show>波场账号余额: {{ fousdt.balance.quantity }}, 如需及时到账账金额请小于该余额，可自动转账</b-alert>
       <div class="m-2">
         <b-input-group size="md">
           <b-form-input v-model="withdrawAmount" type="number" min="10.000000" placeholder="提现金额"></b-form-input>

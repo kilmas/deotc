@@ -14,6 +14,7 @@
     "fibos.js": "^0.3.6",
     "js-base64": "^2.5.1",
     "moment": "^2.24.0",
+    "node-forge": "^0.10.0",
     "url-loader": "^4.1.0",
     "vue": "^2.6.6",
     "vue-clipboard2": "^0.3.0",
@@ -53,7 +54,7 @@
     }
   },
   "resolutions": {
-    "fibos.js/eosjs/eosjs-api":  "git+ssh://git@github.com/kilmas/eosjs-api.git"
+    "fibos.js/eosjs/eosjs-api": "git+https://git@github.com/kilmas/eosjs-api.git"
   },
   "browserslist": [
     "> 1%",

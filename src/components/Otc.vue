@@ -37,8 +37,8 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <main class="column">
-      <template v-if="showTemp === 1">
+    <main class="column d-flex justify-content-center">
+      <div v-if="showTemp === 1" class="col-12 col-sm-12 col-md-9 col-lg-7 pr-0 pl-0">
         <div class="flex-row-center">
           <b-dropdown
             id="dropdown-left"
@@ -741,8 +741,8 @@
             </b-list-group>
           </b-tab>
         </b-tabs>
-      </template>
-      <template v-else-if="showTemp === 2">
+      </div>
+      <div v-else-if="showTemp === 2" class="col-12 col-sm-12 col-md-8 col-lg-6 pr-0 pl-0">
         <div style="margin: 2vw">
           <h4 class="primary" style="font-weight: bold;">收款信息</h4>
         </div>
@@ -822,10 +822,10 @@
             <!-- <b-button variant="outline-primary">+ 添加</b-button> -->
           </div>
         </div>
-      </template>
-      <template v-else-if="showTemp === 3">
+      </div>
+      <div v-else-if="showTemp === 3" class="col-12 col-sm-12 col-md-8 col-lg-6 pr-0 pl-0">
         <div style="margin: 2vw">
-          <h4 class="primary" style="font-weight: bold;">出售信息</h4>
+          <h4 class="primary" style="font-weight: bold;">挂单信息</h4>
         </div>
         <div
           class="w-100"
@@ -887,8 +887,8 @@
             <!-- <b-button variant="outline-primary">+ 添加</b-button> -->
           </div>
         </div>
-      </template>
-      <template v-else-if="showTemp === 4">
+      </div>
+      <div v-else-if="showTemp === 4" class="col-12 col-sm-12 col-md-8 col-lg-6 pr-0 pl-0">
         <div style="margin: 2vw">
           <h4 class="primary" style="font-weight: bold;">仲裁</h4>
         </div>
@@ -915,7 +915,7 @@
             <!-- <b-button variant="outline-primary">+ 添加</b-button> -->
           </div>
         </div>
-      </template>
+      </div>
     </main>
     <b-modal
       id="updateorder"
@@ -927,8 +927,8 @@
     >
       <b-form-input v-model="orderPrice" placeholder="1.00" type="number"></b-form-input>
     </b-modal>
-    <b-modal v-model="tranHash" centered hide-header hide-footer>
-      <div :class="tranText">{{tranMsg}}</div>
+    <b-modal v-model="tranHash" centered :hide-header="!tranTitle" :title="tranTitle"  hide-footer>
+      <div :class="tranText" style="word-wrap: break-word">{{tranMsg}}</div>
     </b-modal>
     <b-modal id="bv-modal-example" centered hide-footer hide-header v-model="showMsg">
       <div class="d-block text-center">
@@ -967,6 +967,7 @@ import VueClipboard from 'vue-clipboard2'
 import VueQriously from 'vue-qriously'
 Vue.use(VueQriously)
 import { QrcodeCapture } from 'vue-qrcode-reader'
+import lodashGet from "lodash/get"
 // import VueQArt from 'vue-qart'
 Vue.use(VueClipboard)
 const moment = require('moment')
@@ -1174,6 +1175,7 @@ export default {
         require('../assets/alipay.png'),
         require('../assets/alipay.png'),
       ],
+      tranTitle: '',
     }
   },
   methods: {
@@ -1201,12 +1203,22 @@ export default {
     onDecode(result) {
       this.resultCode = result
     },
-    tranModal(show, msg, text) {
+    errMsg(e) {
+      return typeof e === "string"
+        ? lodashGet(e.match(/Error: ([\S\s]*?)at/), "[1]", e)
+        : JSON.stringify(e);
+    },
+    tranModal(show, msg, text, title) {
       if (msg) {
         this.tranMsg = msg
       }
       if (text) {
         this.tranText = text
+      }
+      if (title) {
+        this.tranTitle = title;
+      } else {
+        this.tranTitle = "";
       }
       this.tranHash = show
     },
@@ -1225,8 +1237,7 @@ export default {
         this.tranModal(true, '设置成功', 'text-success')
         this.getAcctInfo(this.account.name)
       } catch (e) {
-        console.log('error', e)
-        this.tranModal(true, '设置失败', 'text-danger')
+        this.tranModal(true, this.errMsg(e), 'text-danger', '设置失败')
       }
       this.buttonSpiner = false
     },
@@ -1244,8 +1255,7 @@ export default {
         this.tranModal(true, '设置成功', 'text-success')
         this.getAcctInfo(this.account.name)
       } catch (e) {
-        console.log('error', e)
-        this.tranModal(true, '设置失败', 'text-danger')
+        this.tranModal(true, this.errMsg(e), 'text-danger', '设置失败')
       }
       this.buttonSpiner = false
     },
@@ -1264,8 +1274,7 @@ export default {
         this.$set(this.mySellList, this.selectItem.id, this.selectItem)
         this.tranModal(true, '更新成功', 'text-success')
       } catch (e) {
-        console.error('error', e)
-        this.tranModal(true, '更新失败', 'text-danger')
+        this.tranModal(true, this.errMsg(e), 'text-danger', '更新失败')
       }
       this.buttonSpiner = false
     },
@@ -1287,7 +1296,7 @@ export default {
         console.log(trx)
       } catch (e) {
         console.log('error', e)
-        this.tranModal(true, '取消失败', 'text-danger')
+        this.tranModal(true, this.errMsg(e), 'text-danger', '取消失败')
       }
       this.buttonSpiner = false
     },
@@ -1308,8 +1317,7 @@ export default {
         this.tranModal(true, '确认成功，订单转账成功！', 'text-success')
         console.log(trx)
       } catch (e) {
-        console.error('error', e)
-        this.tranModal(true, '确认失败！', 'text-danger')
+        this.tranModal(true, this.errMsg(e), 'text-danger', '确认失败！')
       }
       this.buttonSpiner = false
     },
@@ -1335,7 +1343,7 @@ export default {
         this.getArbs()
       } catch (e) {
         console.error('error', e)
-        this.tranModal(true, '仲裁失败', 'text-danger')
+        this.tranModal(true, this.errMsg(e), 'text-danger', '仲裁失败')
       }
       this.buttonSpiner = false
     },
@@ -1358,8 +1366,7 @@ export default {
         }
         console.log(trx)
       } catch (e) {
-        console.error('error', e)
-        this.tranModal(true, '申请仲裁失败', 'text-danger')
+        this.tranModal(true, this.errMsg(e), 'text-danger', '申请仲裁失败')
       }
       this.buttonSpiner = false
     },
@@ -1382,7 +1389,7 @@ export default {
         }
         console.log(trx)
       } catch (e) {
-        this.tranModal(true, '上诉取消', 'text-danger')
+        this.tranModal(true, this.errMsg(e), 'text-danger', '上诉操作取消')
       }
       this.buttonSpiner = false
     },
@@ -1410,8 +1417,7 @@ export default {
           this.tranModal(true, '提交成功', 'text-success')
           this.getRecords()
         } catch (e) {
-          console.error('error', e)
-          this.tranModal(true, '提交失败', 'text-danger')
+          this.tranModal(true, this.errMsg(e), 'text-danger', '提交失败')
         }
         this.buttonSpiner = false
       }
@@ -1431,8 +1437,7 @@ export default {
         this.tranModal(true, '锁定订单成功', 'text-success')
         this.getRecords()
       } catch (e) {
-        console.error('error', e)
-        this.tranModal(true, '锁定失败', 'text-danger')
+        this.tranModal(true, this.errMsg(e), 'text-danger', '锁定失败')
       }
       this.buttonSpiner = false
     },
@@ -1562,7 +1567,7 @@ export default {
         this.getRecords()
       } catch (e) {
         console.error('error', e)
-        this.tranModal(true, '提交失败', 'text-danger')
+        this.tranModal(true, this.errMsg(e), 'text-danger', '提交失败')
       }
       this.buttonSpiner = false
     },
@@ -1585,7 +1590,7 @@ export default {
         this.$delete(this.arbsItems, item.id)
       } catch (e) {
         console.error('error', e)
-        this.tranModal(true, '提现取消', 'text-danger')
+        this.tranModal(true, this.errMsg(e), 'text-danger', '提现取消')
       }
       this.buttonSpiner = false
     },
